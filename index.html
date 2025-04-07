@@ -2,97 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Influencer Manager</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Influencer Manager | Login</title>
+  <link rel="stylesheet" href="login.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
+  <div class="login-container">
+    <div class="login-box">
       <h1>AI Influencer Manager</h1>
-      <p>Dashboard overview of influencers, campaigns, and performance.</p>
-    </header>
-
-    <section class="stats">
-      <div class="stat-card">
-        <p>Total Influencers</p>
-        <p>128</p>
-      </div>
-      <div class="stat-card">
-        <p>Active Campaigns</p>
-        <p>12</p>
-      </div>
-      <div class="stat-card">
-        <p>Avg. Engagement Rate</p>
-        <p>4.7%</p>
-      </div>
-      <div class="stat-card">
-        <p>Monthly Reach</p>
-        <p>1.2M</p>
-      </div>
-    </section>
-
-    <section>
-      <h2>Top Campaigns</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Campaign</th>
-            <th>Influencer</th>
-            <th>Reach</th>
-            <th>Engagement</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>LaunchX</td>
-            <td>TechSara</td>
-            <td>560K</td>
-            <td>5.2%</td>
-          </tr>
-          <tr>
-            <td>GlowUp</td>
-            <td>BeautyBella</td>
-            <td>410K</td>
-            <td>4.9%</td>
-          </tr>
-          <tr>
-            <td>FitFuel</td>
-            <td>GymJay</td>
-            <td>320K</td>
-            <td>6.1%</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section>
-      <h2>Top Influencers</h2>
-      <ul class="influencer-list">
-        <li class="influencer">
-          <div>
-            <p><strong>TechSara</strong></p>
-            <p>YouTube</p>
-          </div>
-          <p class="followers">300K followers</p>
-        </li>
-        <li class="influencer">
-          <div>
-            <p><strong>BeautyBella</strong></p>
-            <p>Instagram</p>
-          </div>
-          <p class="followers">220K followers</p>
-        </li>
-        <li class="influencer">
-          <div>
-            <p><strong>GymJay</strong></p>
-            <p>TikTok</p>
-          </div>
-          <p class="followers">180K followers</p>
-        </li>
-      </ul>
-    </section>
+      <form onsubmit="return loginRedirect(event)">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <select id="roleSelect" required>
+          <option value="">Login as...</option>
+          <option value="influencer">Influencer</option>
+          <option value="agency">Marketing Agency</option>
+        </select>
+        <button type="submit">Login</button>
+      </form>
+    </div>
   </div>
+
+  <script>
+    function loginRedirect(event) {
+      event.preventDefault();
+      const role = document.getElementById("roleSelect").value;
+      if (role === "influencer") {
+        window.location.href = "influencer-dashboard.html";
+      } else if (role === "agency") {
+        window.location.href = "agency-dashboard.html";
+      }
+    }
+  </script>
 </body>
 </html>
