@@ -2,12 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Influencer Manager</title>
-  <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
@@ -17,13 +15,25 @@
     </header>
 
     <section class="stats">
-      <div class="card">Total Influencers<br><strong>128</strong></div>
-      <div class="card">Active Campaigns<br><strong>12</strong></div>
-      <div class="card">Avg. Engagement<br><strong>4.7%</strong></div>
-      <div class="card">Monthly Reach<br><strong>1.2M</strong></div>
+      <div class="stat-card">
+        <p>Total Influencers</p>
+        <p>128</p>
+      </div>
+      <div class="stat-card">
+        <p>Active Campaigns</p>
+        <p>12</p>
+      </div>
+      <div class="stat-card">
+        <p>Avg. Engagement Rate</p>
+        <p>4.7%</p>
+      </div>
+      <div class="stat-card">
+        <p>Monthly Reach</p>
+        <p>1.2M</p>
+      </div>
     </section>
 
-    <section class="table-section">
+    <section>
       <h2>Top Campaigns</h2>
       <table>
         <thead>
@@ -57,30 +67,32 @@
       </table>
     </section>
 
-    <section class="list-section">
+    <section>
       <h2>Top Influencers</h2>
-      <ul>
-        <li>
-          <span>
-            <strong>TechSara</strong><br><small>YouTube</small>
-          </span>
-          <span>300K followers</span>
+      <ul class="influencer-list">
+        <li class="influencer">
+          <div>
+            <p><strong>TechSara</strong></p>
+            <p>YouTube</p>
+          </div>
+          <p class="followers">300K followers</p>
         </li>
-        <li>
-          <span>
-            <strong>BeautyBella</strong><br><small>Instagram</small>
-          </span>
-          <span>220K followers</span>
+        <li class="influencer">
+          <div>
+            <p><strong>BeautyBella</strong></p>
+            <p>Instagram</p>
+          </div>
+          <p class="followers">220K followers</p>
         </li>
-        <li>
-          <span>
-            <strong>GymJay</strong><br><small>TikTok</small>
-          </span>
-          <span>180K followers</span>
+        <li class="influencer">
+          <div>
+            <p><strong>GymJay</strong></p>
+            <p>TikTok</p>
+          </div>
+          <p class="followers">180K followers</p>
         </li>
       </ul>
     </section>
   </div>
 </body>
 </html>
-
