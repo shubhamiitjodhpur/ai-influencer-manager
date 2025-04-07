@@ -32,6 +32,17 @@
       color: white;
       font-weight: bold;
     }
+    .social-links button.active {
+      background: #00ffe7;
+      color: #002c39;
+    }
+    .campaign-section {
+      margin-bottom: 2rem;
+    }
+    .revenue-positive {
+      color: #4caf50;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body class="dashboard-body">
@@ -44,11 +55,10 @@
     <div class="nav-cards">
       <div class="nav-card" onclick="showSection('profile')">Profile</div>
       <div class="nav-card" onclick="showSection('campaigns')">Campaigns</div>
-      <div class="nav-card" onclick="showSection('community')">Community</div>
+      <div class="nav-card" onclick="showSection('community')">Community Feed</div>
       <div class="nav-card" onclick="showSection('revenue')">Revenue</div>
     </div>
 
-    <!-- Sections -->
     <section id="profile" class="section active">
       <div class="stats">
         <div class="card">
@@ -64,48 +74,153 @@
           <p id="reach">1.1M</p>
         </div>
       </div>
-
       <div class="social-links">
-        <button onclick="loadFeed('youtube')">YouTube</button>
-        <button onclick="loadFeed('twitter')">Twitter</button>
-        <button onclick="loadFeed('reddit')">Reddit</button>
-        <button onclick="loadFeed('instagram')">Instagram</button>
+        <button id="youtube-btn" onclick="loadFeed('youtube')">YouTube</button>
+        <button id="twitter-btn" onclick="loadFeed('twitter')">Twitter</button>
+        <button id="reddit-btn" onclick="loadFeed('reddit')">Reddit</button>
+        <button id="instagram-btn" onclick="loadFeed('instagram')">Instagram</button>
       </div>
-
       <div id="social-feed" class="card" style="margin-top: 2rem;"></div>
     </section>
 
     <section id="campaigns" class="section">
-      <h2>Active Campaigns</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Campaign</th>
-            <th>Brand</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>TechGear Launch</td>
-            <td>GizmoTech</td>
-            <td>Ongoing</td>
-          </tr>
-          <tr>
-            <td>Summer Glow</td>
-            <td>BeautyBox</td>
-            <td>Completed</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="campaign-section">
+        <h2>Active Campaigns</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Brand</th>
+              <th>Campaign Type</th>
+              <th>Revenue Generated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TechGear Launch</td>
+              <td>GizmoTech</td>
+              <td>Revenue Share</td>
+              <td class="revenue-positive">$850</td>
+            </tr>
+            <tr>
+              <td>Eco-Friendly Products</td>
+              <td>GreenLife</td>
+              <td>Brand Awareness</td>
+              <td class="revenue-positive">$650</td>
+            </tr>
+            <tr>
+              <td>Gaming Peripherals</td>
+              <td>GameEdge</td>
+              <td>Brand Awareness with Sentiment Bonus</td>
+              <td class="revenue-positive">$450</td>
+            </tr>
+            <tr>
+              <td>Fitness App Campaign</td>
+              <td>FitTrack</td>
+              <td>Affiliate</td>
+              <td class="revenue-positive">$380</td>
+            </tr>
+            <tr>
+              <td>Streaming Service Promo</td>
+              <td>StreamFlix</td>
+              <td>Revenue Share</td>
+              <td class="revenue-positive">$720</td>
+            </tr>
+            <tr>
+              <td>Travel Accessories</td>
+              <td>WanderGear</td>
+              <td>Brand Awareness</td>
+              <td class="revenue-positive">$290</td>
+            </tr>
+            <tr>
+              <td>Audio Equipment</td>
+              <td>SoundPro</td>
+              <td>Brand Awareness with Sentiment Bonus</td>
+              <td class="revenue-positive">$550</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="campaign-section">
+        <h2>Completed Campaigns</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Brand</th>
+              <th>Campaign Type</th>
+              <th>Revenue Generated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Summer Glow</td>
+              <td>BeautyBox</td>
+              <td>Affiliate</td>
+              <td class="revenue-positive">$1,250</td>
+            </tr>
+            <tr>
+              <td>Coffee Subscription</td>
+              <td>BeanBox</td>
+              <td>Revenue Share</td>
+              <td class="revenue-positive">$950</td>
+            </tr>
+            <tr>
+              <td>Book Launch</td>
+              <td>PageTurner Publishers</td>
+              <td>Brand Awareness</td>
+              <td class="revenue-positive">$800</td>
+            </tr>
+            <tr>
+              <td>Smart Home Devices</td>
+              <td>HomeTech</td>
+              <td>Brand Awareness with Sentiment Bonus</td>
+              <td class="revenue-positive">$1,450</td>
+            </tr>
+            <tr>
+              <td>Winter Fashion</td>
+              <td>StyleHub</td>
+              <td>Affiliate</td>
+              <td class="revenue-positive">$1,320</td>
+            </tr>
+            <tr>
+              <td>Productivity App</td>
+              <td>TaskMaster</td>
+              <td>Revenue Share</td>
+              <td class="revenue-positive">$750</td>
+            </tr>
+            <tr>
+              <td>Pet Supplies</td>
+              <td>PetPals</td>
+              <td>Brand Awareness</td>
+              <td class="revenue-positive">$680</td>
+            </tr>
+            <tr>
+              <td>Plant-Based Food</td>
+              <td>GreenEats</td>
+              <td>Brand Awareness with Sentiment Bonus</td>
+              <td class="revenue-positive">$930</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section id="community" class="section">
-      <h2>Community Interactions</h2>
+      <h2>Community Feed</h2>
       <ul>
-        <li><strong>Q&amp;A:</strong> “What mic do you use?” — Answered</li>
-        <li><strong>Comment:</strong> “Loved your last video!” — Replied</li>
+        <li><strong>Q&amp;A:</strong> "What mic do you use?" — Answered</li>
+        <li><strong>Comment:</strong> "Loved your last video!" — Replied</li>
+        <li><strong>Post:</strong> "Live session this weekend!" — 45 comments</li>
+        <li><strong>Poll:</strong> "What gear do you use?" — 230 votes</li>
       </ul>
+      <div class="social-links">
+        <button id="discord-btn" onclick="loadPlatformFeed('discord')">Join Discord</button>
+        <button id="patreon-btn" onclick="loadPlatformFeed('patreon')">Support on Patreon</button>
+        <button id="telegram-btn" onclick="loadPlatformFeed('telegram')">Join Telegram</button>
+      </div>
+      <div id="platform-feed" class="card" style="margin-top: 1rem;"></div>
     </section>
 
     <section id="revenue" class="section">
@@ -139,9 +254,9 @@
           <h3>AdSense Revenue Sources</h3>
           <table>
             <tr><th>Post</th><th>Revenue</th></tr>
-            <tr><td>Instagram Post #12</td><td>$400</td></tr>
-            <tr><td>YouTube Shorts #6</td><td>$600</td></tr>
-            <tr><td>Twitter Thread #8</td><td>$1,000</td></tr>
+            <tr><td style="color: white;">Instagram Post #12</td><td>$400</td></tr>
+            <tr><td style="color: white;">YouTube Shorts #6</td><td>$600</td></tr>
+            <tr><td style="color: white;">Twitter Thread #8</td><td>$1,000</td></tr>
           </table>
         </div>
         <div class="card revenue-card">
@@ -156,7 +271,7 @@
         <div class="card revenue-card">
           <h3>Brand Marketing Revenue Sources</h3>
           <table>
-            <tr><th>Brand</th><th>Fee</th><th>Brand Sentiment Bonus</th></tr>
+            <tr><th>Brand</th><th>Fee</th><th>Bonus</th></tr>
             <tr><td>GlowSkincare</td><td>$600</td><td>$100</td></tr>
             <tr><td>GameEdge</td><td>$300</td><td>$50</td></tr>
             <tr><td>EcoFresh</td><td>$100</td><td>$50</td></tr>
@@ -179,6 +294,17 @@
     }
 
     function loadFeed(platform) {
+      // Reset active state for all buttons
+      document.querySelectorAll('.social-links button').forEach(btn => {
+        if (btn.id.includes('youtube') || btn.id.includes('twitter') || 
+            btn.id.includes('reddit') || btn.id.includes('instagram')) {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Set active state for clicked button
+      document.getElementById(`${platform}-btn`).classList.add('active');
+      
       const feedContainer = document.getElementById('social-feed');
       const dummyFeeds = {
         youtube: [...Array(10).keys()].map(i => `<tr><td>Video #${i+1}</td><td>${(10000 + i*1500).toLocaleString()}</td><td>${(500 + i*120).toLocaleString()}</td><td>${sentimentTag(['Good','Neutral','Bad'][i%3])}</td></tr>`).join(''),
@@ -209,29 +335,62 @@
       }
     }
 
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['AdSense', 'Affiliate', 'Brand Marketing'],
-        datasets: [{
-          label: 'Revenue in USD',
-          data: [2000, 1200, 1000],
-          borderColor: '#4caf50',
-          backgroundColor: 'rgba(76, 175, 80, 0.2)',
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: { display: true, text: 'Revenue Trend' }
+    function loadPlatformFeed(platform) {
+      // Reset active state for all buttons
+      document.querySelectorAll('.social-links button').forEach(btn => {
+        if (btn.id.includes('discord') || btn.id.includes('patreon') || 
+            btn.id.includes('telegram')) {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Set active state for clicked button
+      document.getElementById(`${platform}-btn`).classList.add('active');
+      
+      const platformFeed = document.getElementById('platform-feed');
+      platformFeed.innerHTML = `
+        <p><strong>${platform.charAt(0).toUpperCase() + platform.slice(1)} Feed:</strong></p>
+        <ul>
+          <li>New post in ${platform} community!</li>
+          <li>User XYZ commented: "Keep up the great work!"</li>
+          <li>Shared behind-the-scenes content.</li>
+        </ul>
+      `;
+    }
+
+    // Initialize the page with default selections
+    window.onload = function() {
+      // Trigger YouTube button click in profile section
+      loadFeed('youtube');
+      
+      // Trigger Discord button click in community feed section
+      loadPlatformFeed('discord');
+      
+      // Load revenue chart
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['AdSense', 'Affiliate', 'Brand Marketing'],
+          datasets: [{
+            label: 'Revenue in USD',
+            data: [2000, 1200, 1000],
+            borderColor: '#4caf50',
+            backgroundColor: 'rgba(76, 175, 80, 0.2)',
+            fill: true,
+            tension: 0.3
+          }]
         },
-        scales: { y: { beginAtZero: true } }
-      }
-    });
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Revenue Trend' }
+          },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    };
   </script>
 </body>
 </html>
