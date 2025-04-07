@@ -27,17 +27,16 @@
   <script>
     function login(event) {
       event.preventDefault();
+  
       const role = document.getElementById("role").value;
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const password = document.getElementById("password").value.trim().toLowerCase();
       const error = document.getElementById("error-msg");
-
+  
       if (role === "influencer") {
         window.location.href = "influencer-dashboard.html";
       } else if (role === "agency") {
         window.location.href = "agency-dashboard.html";
       } else {
-        error.textContent = "Invalid credentials or role. Try again.";
+        error.textContent = "Please select a role before logging in.";
       }
     }
   </script>
