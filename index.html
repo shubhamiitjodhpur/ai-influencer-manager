@@ -11,13 +11,13 @@
     <div class="login-box">
       <h1>AI Influencer Manager</h1>
       <form onsubmit="return login(event)">
+        <input type="text" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
         <select id="role" required>
           <option value="" disabled selected>Select Role</option>
           <option value="influencer">Influencer</option>
           <option value="agency">Agency</option>
         </select>
-        <input type="text" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
         <button type="submit">Login</button>
         <p id="error-msg" style="color: #ff5e5e; margin-top: 10px;"></p>
       </form>
