@@ -1,15 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Influencer Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
-  <div class="dashboard">
-    <h1>Welcome, Influencer 👩‍💻</h1>
-    <p>Here’s your performance and campaign data.</p>
-    <!-- Add more sections later -->
+  <div class="dashboard-container">
+    <header>
+      <h1>Welcome, Influencer</h1>
+      <p>Here's your campaign and content overview.</p>
+    </header>
+
+    <section class="stats">
+      <div class="card">
+        <h3>Followers</h3>
+        <p>132,000</p>
+      </div>
+      <div class="card">
+        <h3>Engagement Rate</h3>
+        <p>4.8%</p>
+      </div>
+      <div class="card">
+        <h3>Monthly Reach</h3>
+        <p>1.1M</p>
+      </div>
+    </section>
+
+    <section class="campaigns">
+      <h2>Active Campaigns</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Campaign</th>
+            <th>Brand</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TechGear Launch</td>
+            <td>GizmoTech</td>
+            <td>Ongoing</td>
+          </tr>
+          <tr>
+            <td>Summer Glow</td>
+            <td>BeautyBox</td>
+            <td>Completed</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="performance">
+      <h2>Recent Content Performance</h2>
+      <ul>
+        <li>
+          <strong>IG Reel:</strong> "Unboxing TechGear Pro" – <span>120K views, 6.2% engagement</span>
+        </li>
+        <li>
+          <strong>YouTube Video:</strong> "Morning Routine ft. BeautyBox" – <span>89K views, 5.8% engagement</span>
+        </li>
+      </ul>
+    </section>
   </div>
 </body>
 </html>
