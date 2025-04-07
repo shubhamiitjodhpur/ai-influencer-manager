@@ -10,27 +10,28 @@
   <div class="login-container">
     <div class="login-box">
       <h1>AI Influencer Manager</h1>
-      <form onsubmit="return loginRedirect(event)">
-        <input type="email" placeholder="Email" required />
-        <input type="password" placeholder="Password" required />
-        <select id="roleSelect" required>
-          <option value="">Login as...</option>
-          <option value="influencer">Influencer</option>
-          <option value="agency">Marketing Agency</option>
-        </select>
+      <form onsubmit="return login(event)">
+        <input type="text" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
         <button type="submit">Login</button>
+        <p id="error-msg" style="color: #ff5e5e; margin-top: 10px;"></p>
       </form>
     </div>
   </div>
 
   <script>
-    function loginRedirect(event) {
+    function login(event) {
       event.preventDefault();
-      const role = document.getElementById("roleSelect").value;
-      if (role === "influencer") {
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value.trim().toLowerCase();
+      const error = document.getElementById("error-msg");
+
+      if (email === "influencer" && password === "influencer") {
         window.location.href = "influencer-dashboard.html";
-      } else if (role === "agency") {
+      } else if (email === "agency" && password === "agency") {
         window.location.href = "agency-dashboard.html";
+      } else {
+        error.textContent = "Invalid credentials. Try again.";
       }
     }
   </script>
