@@ -60,4 +60,8 @@
   .login-box button:hover {
     background-color: #0ff;
   }
-  
+  /* Make dropdown options visible */
+.login-box select option {
+    background-color: #111; /* or use rgba for semi-transparent */
+    color: #fff;
+  }
