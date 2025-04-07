@@ -1,15 +1,956 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agency Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .sentiment-good { color: #4caf50; font-weight: bold; }
+    .sentiment-neutral { color: #9e9e9e; font-weight: bold; }
+    .sentiment-bad { color: #f44336; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; }
+    table, th, td { border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem; }
+    th { background-color: rgba(255, 255, 255, 0.1); }
+    .card input[type="range"] { width: 100%; }
+
+
+    .graph-placeholder {
+      width: 100%;
+      height: 300px;
+      margin-top: 1rem;
+    }
+    .sub-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .sub-columns .card {
+      flex: 1;
+      min-width: 280px;
+    }
+    .talent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .talent-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .talent-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+    }
+    .talent-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+      border: 2px solid rgba(0, 255, 255, 0.5);
+    }
+    .talent-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .talent-metrics {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .talent-metrics span {
+      font-size: 0.85rem;
+    }
+    .performance-positive {
+      color: #4caf50;
+      font-weight: bold;
+    }
+    .performance-negative {
+      color: #f44336;
+      font-weight: bold;
+    }
+    .performance-neutral {
+      color: #ffc107;
+      font-weight: bold;
+    }
+    .filter-bar {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .filter-bar select, .filter-bar input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+    }
+    .filter-bar button {
+      background: rgba(0, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+      border: 1px solid #00ffe7;
+      color: #00ffe7;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .filter-bar button:hover {
+      background: #00ffe7;
+      color: #002c39;
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #00ffe7, #4caf50);
+      border-radius: 4px;
+    }
+    .ai-badge {
+      background: linear-gradient(135deg, #ff9966, #ff5e62);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 1rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    .social-links button.active {
+      background: #00ffe7;
+      color: #002c39;
+    }
+    .chart-container {
+      height: 300px;
+      margin-bottom: 2rem;
+    }
+    .remuneration-model {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #00ffe7;
+    }
+    .suggestion-card {
+      margin-bottom: 1rem;
+      border-left: 4px solid #ff9966;
+    }
+  </style>
 </head>
-<body>
-  <div class="dashboard">
-    <h1>Welcome, Marketing Agency 🎯</h1>
-    <p>Manage campaigns and discover influencers here.</p>
-    <!-- Add more sections later -->
+<body class="dashboard-body">
+  <div class="dashboard-container">
+    <header>
+      <h1>Influencer Marketing Management Dashboard</h1>
+      <p>Your AI-powered dashboard for influencer management and campaigns.</p>
+    </header>
+
+    <div class="nav-cards">
+      <div class="nav-card" onclick="showSection('talent')">Talent Data</div>
+      <div class="nav-card" onclick="showSection('campaigns')">Brand Campaigns</div>
+      <div class="nav-card" onclick="showSection('suggestions')">Brand Suggestions</div>
+      <div class="nav-card" onclick="showSection('remuneration')">Remuneration</div>
+    </div>
+
+    <!-- Talent Data Section -->
+    <section id="talent" class="section active">
+      <h2>Influencer Talent Database <span class="ai-badge">AI-Powered</span></h2>
+      
+      <div class="filter-bar">
+        <input type="text" placeholder="Search influencers..." />
+        <select>
+          <option>All Categories</option>
+          <option>Tech</option>
+          <option>Beauty</option>
+          <option>Fitness</option>
+          <option>Gaming</option>
+          <option>Lifestyle</option>
+        </select>
+        <select>
+          <option>Audience Size</option>
+          <option>Nano (1K-10K)</option>
+          <option>Micro (10K-100K)</option>
+          <option>Macro (100K-1M)</option>
+          <option>Mega (1M+)</option>
+        </select>
+        <select>
+          <option>Engagement Rate</option>
+          <option>High (>5%)</option>
+          <option>Medium (2-5%)</option>
+          <option>Low (<2%)</option>
+        </select>
+        <button>Apply Filters</button>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Total Influencers</h3>
+          <p>357</p>
+        </div>
+        <div class="card">
+          <h3>Average Engagement</h3>
+          <p>4.2%</p>
+        </div>
+        <div class="card">
+          <h3>Active Campaigns</h3>
+          <p>42</p>
+        </div>
+        <div class="card">
+          <h3>Sentiment Score</h3>
+          <p class="performance-positive">8.7/10</p>
+        </div>
+      </div>
+
+      <div class="sub-columns">
+        <div class="card">
+          <h3>Influencer Performance Overview</h3>
+          <div class="chart-container">
+            <canvas id="influencerPerformanceChart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Sentiment Analysis <span class="ai-badge">NLP</span></h3>
+          <div class="chart-container">
+            <canvas id="sentimentChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <h3>Top Performing Influencers</h3>
+      <div class="talent-grid">
+        <!-- Influencer Card 1 -->
+        <div class="talent-card">
+          <div class="talent-header">
+            <img src="/api/placeholder/60/60" alt="Influencer Avatar" />
+            <div>
+              <h4>Sarah Tech</h4>
+              <p>Tech Reviewer</p>
+            </div>
+          </div>
+          <div class="talent-metrics">
+            <span>230K Followers</span>
+            <span class="performance-positive">6.8% Engagement</span>
+          </div>
+          <div class="talent-metrics">
+            <span>Sentiment Score:</span>
+            <span class="performance-positive">9.2/10</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 92%"></div>
+          </div>
+          <p style="margin-top: 10px; font-size: 0.9rem;">Bot Detection: <span class="performance-positive">Low Risk (5%)</span></p>
+        </div>
+
+        <!-- Influencer Card 2 -->
+        <div class="talent-card">
+          <div class="talent-header">
+            <img src="/api/placeholder/60/60" alt="Influencer Avatar" />
+            <div>
+              <h4>Fitness Mike</h4>
+              <p>Fitness & Nutrition</p>
+            </div>
+          </div>
+          <div class="talent-metrics">
+            <span>450K Followers</span>
+            <span class="performance-positive">5.3% Engagement</span>
+          </div>
+          <div class="talent-metrics">
+            <span>Sentiment Score:</span>
+            <span class="performance-positive">8.9/10</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 89%"></div>
+          </div>
+          <p style="margin-top: 10px; font-size: 0.9rem;">Bot Detection: <span class="performance-positive">Low Risk (7%)</span></p>
+        </div>
+
+        <!-- Influencer Card 3 -->
+        <div class="talent-card">
+          <div class="talent-header">
+            <img src="/api/placeholder/60/60" alt="Influencer Avatar" />
+            <div>
+              <h4>Beauty Queen</h4>
+              <p>Beauty & Makeup</p>
+            </div>
+          </div>
+          <div class="talent-metrics">
+            <span>780K Followers</span>
+            <span class="performance-neutral">3.7% Engagement</span>
+          </div>
+          <div class="talent-metrics">
+            <span>Sentiment Score:</span>
+            <span class="performance-positive">8.1/10</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 81%"></div>
+          </div>
+          <p style="margin-top: 10px; font-size: 0.9rem;">Bot Detection: <span class="performance-neutral">Medium Risk (18%)</span></p>
+        </div>
+
+        <!-- Influencer Card 4 -->
+        <div class="talent-card">
+          <div class="talent-header">
+            <img src="/api/placeholder/60/60" alt="Influencer Avatar" />
+            <div>
+              <h4>Gaming Pro</h4>
+              <p>Gaming & E-sports</p>
+            </div>
+          </div>
+          <div class="talent-metrics">
+            <span>1.2M Followers</span>
+            <span class="performance-positive">4.9% Engagement</span>
+          </div>
+          <div class="talent-metrics">
+            <span>Sentiment Score:</span>
+            <span class="performance-positive">8.7/10</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 87%"></div>
+          </div>
+          <p style="margin-top: 10px; font-size: 0.9rem;">Bot Detection: <span class="performance-positive">Low Risk (3%)</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand Campaigns Section -->
+    <section id="campaigns" class="section">
+      <h2>Brand Campaigns Management</h2>
+      
+      <div class="filter-bar">
+        <input type="text" placeholder="Search campaigns..." />
+        <select>
+          <option>All Statuses</option>
+          <option>Active</option>
+          <option>Pending</option>
+          <option>Completed</option>
+        </select>
+        <select>
+          <option>All Brands</option>
+          <option>TechGear</option>
+          <option>BeautyBox</option>
+          <option>FitTrack</option>
+          <option>GameEdge</option>
+        </select>
+        <button>Add New Campaign</button>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Active Campaigns</h3>
+          <p>23</p>
+        </div>
+        <div class="card">
+          <h3>Pending Approval</h3>
+          <p>8</p>
+        </div>
+        <div class="card">
+          <h3>Completed This Month</h3>
+          <p>12</p>
+        </div>
+        <div class="card">
+          <h3>Total Budget</h3>
+          <p>$187,500</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="campaignPerformanceChart"></canvas>
+      </div>
+
+      <h3>Active Brand Campaigns</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Campaign</th>
+            <th>Brand</th>
+            <th>Influencers</th>
+            <th>Timeline</th>
+            <th>Budget</th>
+            <th>Performance <span class="ai-badge">AI</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TechGear Launch 2025</td>
+            <td>GizmoTech</td>
+            <td>15 Influencers</td>
+            <td>Apr 1 - May 15, 2025</td>
+            <td>$45,000</td>
+            <td class="performance-positive">92% (Above Target)</td>
+          </tr>
+          <tr>
+            <td>EcoProducts Summer</td>
+            <td>GreenLife</td>
+            <td>8 Influencers</td>
+            <td>Apr 15 - Jun 30, 2025</td>
+            <td>$27,500</td>
+            <td class="performance-positive">85% (On Target)</td>
+          </tr>
+          <tr>
+            <td>Gaming Peripherals Pro</td>
+            <td>GameEdge</td>
+            <td>12 Influencers</td>
+            <td>Mar 20 - May 20, 2025</td>
+            <td>$38,000</td>
+            <td class="performance-neutral">78% (Needs Attention)</td>
+          </tr>
+          <tr>
+            <td>FitTrack App Promotion</td>
+            <td>FitTrack</td>
+            <td>10 Influencers</td>
+            <td>Apr 5 - Jun 5, 2025</td>
+            <td>$32,000</td>
+            <td class="performance-positive">88% (On Target)</td>
+          </tr>
+          <tr>
+            <td>StreamFlix Launch</td>
+            <td>StreamFlix</td>
+            <td>20 Influencers</td>
+            <td>Apr 1 - Jul 1, 2025</td>
+            <td>$65,000</td>
+            <td class="performance-neutral">75% (Needs Attention)</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h3 style="margin-top: 2rem;">Campaign Insights <span class="ai-badge">AI Analysis</span></h3>
+      <div class="sub-columns">
+        <div class="card">
+          <h4>Sentiment Breakdown</h4>
+          <table>
+            <tr>
+              <th>Campaign</th>
+              <th>Positive</th>
+              <th>Neutral</th>
+              <th>Negative</th>
+            </tr>
+            <tr>
+              <td>TechGear Launch</td>
+              <td class="sentiment-good">78%</td>
+              <td class="sentiment-neutral">18%</td>
+              <td class="sentiment-bad">4%</td>
+            </tr>
+            <tr>
+              <td>EcoProducts</td>
+              <td class="sentiment-good">83%</td>
+              <td class="sentiment-neutral">14%</td>
+              <td class="sentiment-bad">3%</td>
+            </tr>
+            <tr>
+              <td>Gaming Peripherals</td>
+              <td class="sentiment-good">67%</td>
+              <td class="sentiment-neutral">25%</td>
+              <td class="sentiment-bad">8%</td>
+            </tr>
+            <tr>
+              <td>FitTrack App</td>
+              <td class="sentiment-good">76%</td>
+              <td class="sentiment-neutral">19%</td>
+              <td class="sentiment-bad">5%</td>
+            </tr>
+            <tr>
+              <td>StreamFlix Launch</td>
+              <td class="sentiment-good">65%</td>
+              <td class="sentiment-neutral">28%</td>
+              <td class="sentiment-bad">7%</td>
+            </tr>
+          </table>
+        </div>
+        <div class="card">
+          <h4>Audience Demographics</h4>
+          <div class="chart-container">
+            <canvas id="demographicsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand Suggestions Section -->
+    <section id="suggestions" class="section">
+      <h2>AI-Powered Brand Suggestions <span class="ai-badge">ML</span></h2>
+      
+      <div class="stats">
+        <div class="card">
+          <h3>Suggested Matches</h3>
+          <p>32</p>
+        </div>
+        <div class="card">
+          <h3>Avg. Fit Score</h3>
+          <p>87%</p>
+        </div>
+        <div class="card">
+          <h3>New Opportunities</h3>
+          <p>14</p>
+        </div>
+        <div class="card">
+          <h3>Potential Revenue</h3>
+          <p>$215,000</p>
+        </div>
+      </div>
+
+      <h3>Top Brand-Influencer Matches</h3>
+      
+      <div class="card suggestion-card">
+        <h4>Sarah Tech × NewTech Gadgets</h4>
+        <div class="talent-metrics">
+          <span>Match Score: <span class="performance-positive">94%</span></span>
+          <span>Estimated Engagement: <span class="performance-positive">7.2%</span></span>
+        </div>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+          <strong>AI Reasoning:</strong> Sarah's tech review content aligns perfectly with NewTech's upcoming smartphone accessories line. Her audience demographics (25-34, tech enthusiasts) match the brand's target market with 92% overlap. Previous tech accessory campaigns averaged 6.8% engagement.
+        </p>
+        <div class="social-links" style="justify-content: flex-start;">
+          <button>View Details</button>
+          <button>Contact Brand</button>
+          <button>Contact Influencer</button>
+        </div>
+      </div>
+
+      <div class="card suggestion-card">
+        <h4>Fitness Mike × NutriBoost Supplements</h4>
+        <div class="talent-metrics">
+          <span>Match Score: <span class="performance-positive">91%</span></span>
+          <span>Estimated Engagement: <span class="performance-positive">6.5%</span></span>
+        </div>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+          <strong>AI Reasoning:</strong> Mike's fitness content focuses heavily on nutrition and supplements, with audience sentiment showing high trust in his recommendations. NutriBoost's natural focus aligns with Mike's content values. Sentiment analysis shows 89% positive reception to similar products.
+        </p>
+        <div class="social-links" style="justify-content: flex-start;">
+          <button>View Details</button>
+          <button>Contact Brand</button>
+          <button>Contact Influencer</button>
+        </div>
+      </div>
+
+      <div class="card suggestion-card">
+        <h4>Beauty Queen × EcoBeauty Skincare</h4>
+        <div class="talent-metrics">
+          <span>Match Score: <span class="performance-positive">89%</span></span>
+          <span>Estimated Engagement: <span class="performance-positive">5.9%</span></span>
+        </div>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+          <strong>AI Reasoning:</strong> Beauty Queen has mentioned ethical beauty products in 37% of recent content with positive sentiment. EcoBeauty's sustainability message would resonate with her audience's expressed values. Historical data shows her skincare recommendations have 22% higher conversion than makeup.
+        </p>
+        <div class="social-links" style="justify-content: flex-start;">
+          <button>View Details</button>
+          <button>Contact Brand</button>
+          <button>Contact Influencer</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 2rem;">Campaign Concept Suggestions</h3>
+      
+      <div class="sub-columns">
+        <div class="card">
+          <h4>EcoBeauty × Earth Month</h4>
+          <p style="font-size: 0.9rem;">
+            Multi-influencer campaign featuring 5 beauty influencers highlighting EcoBeauty's sustainable packaging and ingredients. Campaign concept includes before/after content and donation tie-in to environmental causes.
+          </p>
+          <div class="talent-metrics">
+            <span>Projected Reach: 3.8M</span>
+            <span>Budget Estimate: $42,000</span>
+          </div>
+          <div class="social-links" style="justify-content: flex-start; margin-top: 1rem;">
+            <button>Develop Concept</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h4>TechGear × Back to School</h4>
+          <p style="font-size: 0.9rem;">
+            Tech influencer collaboration with education-focused content creators for TechGear's productivity tools. Contents include study setups, organization tips, and productivity hacks featuring the products.
+          </p>
+          <div class="talent-metrics">
+            <span>Projected Reach: 2.5M</span>
+            <span>Budget Estimate: $37,000</span>
+          </div>
+          <div class="social-links" style="justify-content: flex-start; margin-top: 1rem;">
+            <button>Develop Concept</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Remuneration Section -->
+    <section id="remuneration" class="section">
+      <h2>Influencer Remuneration Models</h2>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Avg. Campaign Fee</h3>
+          <p>$3,750</p>
+        </div>
+        <div class="card">
+          <h3>Performance Bonuses</h3>
+          <p>$42,500</p>
+        </div>
+        <div class="card">
+          <h3>Sentiment Bonuses</h3>
+          <p>$18,200</p>
+        </div>
+        <div class="card">
+          <h3>ROI</h3>
+          <p class="performance-positive">3.8x</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="remunerationChart"></canvas>
+      </div>
+
+      <h3>Remuneration Models <span class="ai-badge">AI Optimized</span></h3>
+      
+      <div class="remuneration-model">
+        <h4>Fixed Fee + Sentiment Bonus</h4>
+        <p>Base payment plus variable bonus based on audience sentiment and creative integration quality. AI-powered NLP analysis measures positive engagement and authentic brand integration.</p>
+        <div class="talent-metrics">
+          <span>Effectiveness: <span class="performance-positive">High</span></span>
+          <span>Best for: Brand awareness campaigns</span>
+        </div>
+      </div>
+
+      <div class="remuneration-model">
+        <h4>Performance-Based Ranking</h4>
+        <p>Tiered payments based on sentiment score ranking among campaign influencers. Creates healthy competition while maintaining collaboration.</p>
+        <div class="talent-metrics">
+          <span>Effectiveness: <span class="performance-positive">High</span></span>
+          <span>Best for: Multi-influencer campaigns</span>
+        </div>
+      </div>
+
+      <div class="remuneration-model">
+        <h4>Hybrid Affiliate Model</h4>
+        <p>Combined fixed fee with variable commission based on tracked conversions. Includes sentiment analysis bonus for quality brand integration.</p>
+        <div class="talent-metrics">
+          <span>Effectiveness: <span class="performance-positive">Very High</span></span>
+          <span>Best for: Direct response campaigns</span>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 2rem;">Non-Monetary Incentives</h3>
+      
+      <div class="sub-columns">
+        <div class="card">
+          <h4>Competence Enhancement</h4>
+          <ul>
+            <li>Skill development workshops</li>
+            <li>Industry certifications</li>
+            <li>Professional development tools</li>
+            <li>AI-powered performance analytics</li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <h4>Community Building</h4>
+          <ul>
+            <li>Exclusive influencer forums</li>
+            <li>Collaborative campaign opportunities</li>
+            <li>Mentorship programs</li>
+            <li>Peer recognition systems</li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <h4>Autonomy Support</h4>
+          <ul>
+            <li>Creative freedom in content integration</li>
+            <li>Custom KPI selection</li>
+            <li>Personalized dashboard views</li>
+            <li>Influencer-led campaign suggestions</li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function sentimentTag(value) {
+      const sentiment = value.toLowerCase();
+      const icons = { good: "😊", neutral: "😐", bad: "⚠️" };
+      return `<span class="sentiment-${sentiment}">${icons[sentiment] || ""} ${value}</span>`;
+    }
+
+    // Initialize charts and page on load
+    window.onload = function() {
+      // Influencer Performance Chart
+      const ctxPerf = document.getElementById('influencerPerformanceChart').getContext('2d');
+      new Chart(ctxPerf, {
+        type: 'bar',
+        data: {
+          labels: ['Tech', 'Beauty', 'Fitness', 'Gaming', 'Lifestyle'],
+          datasets: [{
+            label: 'Engagement Rate',
+            data: [6.8, 5.2, 7.5, 4.9, 5.8],
+            backgroundColor: 'rgba(0, 255, 231, 0.5)',
+            borderColor: '#00ffe7',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+
+      // Sentiment Analysis Chart
+      const ctxSent = document.getElementById('sentimentChart').getContext('2d');
+      new Chart(ctxSent, {
+        type: 'doughnut',
+        data: {
+          labels: ['Positive', 'Neutral', 'Negative'],
+          datasets: [{
+            data: [75, 20, 5],
+            backgroundColor: [
+              'rgba(76, 175, 80, 0.7)',
+              'rgba(158, 158, 158, 0.7)',
+              'rgba(244, 67, 54, 0.7)'
+            ],
+            borderColor: [
+              'rgba(76, 175, 80, 1)',
+              'rgba(158, 158, 158, 1)',
+              'rgba(244, 67, 54, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          }
+        }
+      });
+
+      // Campaign Performance Chart
+      const ctxCampaign = document.getElementById('campaignPerformanceChart').getContext('2d');
+      new Chart(ctxCampaign, {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          datasets: [
+            {
+              label: 'TechGear Launch',
+              data: [65, 78, 85, 92],
+              borderColor: 'rgba(76, 175, 80, 1)',
+              backgroundColor: 'rgba(76, 175, 80, 0.1)',
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: 'EcoProducts Summer',
+              data: [58, 67, 75, 85],
+              borderColor: 'rgba(33, 150, 243, 1)',
+              backgroundColor: 'rgba(33, 150, 243, 0.1)',
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: 'Gaming Peripherals',
+              data: [62, 68, 73, 78],
+              borderColor: 'rgba(255, 193, 7, 1)',
+              backgroundColor: 'rgba(255, 193, 7, 0.1)',
+              fill: true,
+              tension: 0.4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          }
+        }
+      });
+
+      // Demographics Chart
+      const ctxDemo = document.getElementById('demographicsChart').getContext('2d');
+      new Chart(ctxDemo, {
+        type: 'radar',
+        data: {
+          labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
+          datasets: [
+            {
+              label: 'TechGear Launch',
+              data: [25, 40, 20, 10, 5],
+              backgroundColor: 'rgba(76, 175, 80, 0.2)',
+              borderColor: 'rgba(76, 175, 80, 1)',
+              pointBackgroundColor: 'rgba(76, 175, 80, 1)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgba(76, 175, 80, 1)'
+            },
+            {
+              label: 'Gaming Peripherals',
+              data: [45, 30, 15, 8, 2],
+              backgroundColor: 'rgba(255, 193, 7, 0.2)',
+              borderColor: 'rgba(255, 193, 7, 1)',
+              pointBackgroundColor: 'rgba(255, 193, 7, 1)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgba(255, 193, 7, 1)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              angleLines: {
+                color: 'rgba(255, 255, 255, 0.2)'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.2)'
+              },
+              pointLabels: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              },
+              ticks: {
+                backdropColor: 'transparent',
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          }
+        }
+      });
+
+      // Remuneration Chart
+      const ctxRemuneration = document.getElementById('remunerationChart').getContext('2d');
+      new Chart(ctxRemuneration, {
+        type: 'bar',
+        data: {
+          labels: ['Fixed Fee', 'Performance-Based', 'Hybrid Model', 'Sentiment Bonus'],
+          datasets: [
+            {
+              label: 'Effectiveness Score',
+              data: [75, 82, 91, 88],
+              backgroundColor: [
+                'rgba(33, 150, 243, 0.7)',
+                'rgba(76, 175, 80, 0.7)',
+                'rgba(156, 39, 176, 0.7)',
+                'rgba(255, 193, 7, 0.7)'
+              ],
+              borderColor: [
+                'rgba(33, 150, 243, 1)',
+                'rgba(76, 175, 80, 1)',
+                'rgba(156, 39, 176, 1)',
+                'rgba(255, 193, 7, 1)'
+              ],
+              borderWidth: 1
+            },
+            {
+              label: 'ROI',
+              data: [2.1, 3.5, 3.8, 3.2],
+              type: 'line',
+              borderColor: 'rgba(0, 255, 231, 1)',
+              backgroundColor: 'rgba(0, 255, 231, 0.1)',
+              fill: false,
+              tension: 0.4,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grid: {
+                drawOnChartArea: false
+              },
+              ticks: {
+                color: 'rgba(0, 255, 231, 1)'
+              }
+            },
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          }
+        }
+      });
+    };
+  </script>
 </body>
 </html>
