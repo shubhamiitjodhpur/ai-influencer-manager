@@ -5,13 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Influencer Dashboard</title>
   <link rel="stylesheet" href="dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .sentiment-good { color: green; font-weight: bold; }
     .sentiment-neutral { color: gray; font-weight: bold; }
-    .sentiment-bad { color: red; font-weight: bold; }
+    .sentiment-bad { color: purple; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; }
     table, th, td { border: 1px solid #ccc; padding: 0.5rem; }
     th { background-color: #f7f7f7; }
+    .card input[type="range"] { width: 100%; }
+    .graph-placeholder {
+      width: 100%;
+      height: 300px;
+      margin-top: 1rem;
+    }
+    .sub-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .sub-columns .card {
+      flex: 1;
+      min-width: 280px;
+    }
+    .revenue-card td:first-child {
+      color: white;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body class="dashboard-body">
@@ -25,8 +45,10 @@
       <div class="nav-card" onclick="showSection('profile')">Profile</div>
       <div class="nav-card" onclick="showSection('campaigns')">Campaigns</div>
       <div class="nav-card" onclick="showSection('community')">Community</div>
+      <div class="nav-card" onclick="showSection('revenue')">Revenue</div>
     </div>
 
+    <!-- Sections -->
     <section id="profile" class="section active">
       <div class="stats">
         <div class="card">
@@ -81,121 +103,88 @@
     <section id="community" class="section">
       <h2>Community Interactions</h2>
       <ul>
-        <li><strong>Q&A:</strong> “What mic do you use?” — Answered</li>
+        <li><strong>Q&amp;A:</strong> “What mic do you use?” — Answered</li>
         <li><strong>Comment:</strong> “Loved your last video!” — Replied</li>
       </ul>
+    </section>
+
+    <section id="revenue" class="section">
+      <h2>Revenue Breakdown</h2>
+      <div class="stats">
+        <div class="card">
+          <h3>AdSense Revenue</h3>
+          <p>$2,000</p>
+        </div>
+        <div class="card">
+          <h3>Affiliate Revenue</h3>
+          <p>$1,200</p>
+        </div>
+        <div class="card">
+          <h3>Brand Marketing Revenue</h3>
+          <p>$1,000</p>
+        </div>
+        <div class="card">
+          <h3>Total Revenue</h3>
+          <p>$4,200</p>
+        </div>
+      </div>
+
+      <div class="graph-placeholder">
+        <canvas id="revenueChart"></canvas>
+      </div>
+
+      <h2 style="margin-top: 2rem;">Revenue Sources</h2>
+      <div class="sub-columns" id="revenue-sources">
+        <div class="card revenue-card">
+          <h3>AdSense Revenue Sources</h3>
+          <table>
+            <tr><th>Post</th><th>Revenue</th></tr>
+            <tr><td>Instagram Post #12</td><td>$400</td></tr>
+            <tr><td>YouTube Shorts #6</td><td>$600</td></tr>
+            <tr><td>Twitter Thread #8</td><td>$1,000</td></tr>
+          </table>
+        </div>
+        <div class="card revenue-card">
+          <h3>Affiliate Revenue Sources</h3>
+          <table>
+            <tr><th>Brand</th><th>Revenue</th></tr>
+            <tr><td>FitLife</td><td>$400</td></tr>
+            <tr><td>StyleHut</td><td>$300</td></tr>
+            <tr><td>TechNova</td><td>$500</td></tr>
+          </table>
+        </div>
+        <div class="card revenue-card">
+          <h3>Brand Marketing Revenue Sources</h3>
+          <table>
+            <tr><th>Brand</th><th>Fee</th><th>Brand Sentiment Bonus</th></tr>
+            <tr><td>GlowSkincare</td><td>$600</td><td>$100</td></tr>
+            <tr><td>GameEdge</td><td>$300</td><td>$50</td></tr>
+            <tr><td>EcoFresh</td><td>$100</td><td>$50</td></tr>
+          </table>
+        </div>
+      </div>
     </section>
   </div>
 
   <script>
     function showSection(id) {
-      document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-      });
+      document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
     function sentimentTag(value) {
       const sentiment = value.toLowerCase();
-      return `<span class="sentiment-${sentiment}">${value}</span>`;
+      const icons = { good: "😊", neutral: "😐", bad: "⚠️" };
+      return `<span class="sentiment-${sentiment}">${icons[sentiment] || ""} ${value}</span>`;
     }
 
     function loadFeed(platform) {
       const feedContainer = document.getElementById('social-feed');
-
       const dummyFeeds = {
-        youtube: `
-          <h3>YouTube Feed</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>📹 Video</th>
-                <th>👁️ Views</th>
-                <th>👍 Likes</th>
-                <th>💬 Sentiment</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${[...Array(10).keys()].map(i => `
-                <tr>
-                  <td>Video #${i+1}</td>
-                  <td>${(10000 + i*1500).toLocaleString()}</td>
-                  <td>${(500 + i*120).toLocaleString()}</td>
-                  <td>${sentimentTag(['Good','Neutral','Bad'][i%3])}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `,
-        twitter: `
-          <h3>Twitter Feed</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>🐦 Tweet</th>
-                <th>🔁 Retweets</th>
-                <th>❤️ Likes</th>
-                <th>💬 Sentiment</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${[...Array(10).keys()].map(i => `
-                <tr>
-                  <td>Tweet #${i+1}</td>
-                  <td>${80 + i*15}</td>
-                  <td>${200 + i*50}</td>
-                  <td>${sentimentTag(['Neutral','Good','Bad'][i%3])}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `,
-        instagram: `
-          <h3>Instagram Feed</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>📸 Photo/Reel</th>
-                <th>🔄 Shares</th>
-                <th>❤️ Likes</th>
-                <th>💬 Sentiment</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${[...Array(10).keys()].map(i => `
-                <tr>
-                  <td>Post #${i+1}</td>
-                  <td>${90 + i*30}</td>
-                  <td>${1000 + i*200}</td>
-                  <td>${sentimentTag(['Bad','Good','Neutral'][i%3])}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `,
-        reddit: `
-          <h3>Reddit Feed</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>📝 Post/Comment</th>
-                <th>🔺 Upvotes</th>
-                <th>💬 Replies</th>
-                <th>💭 Sentiment</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${[...Array(10).keys()].map(i => `
-                <tr>
-                  <td>Reddit Thread #${i+1}</td>
-                  <td>${50 + i*40}</td>
-                  <td>${5 + i*4}</td>
-                  <td>${sentimentTag(['Neutral','Bad','Good'][i%3])}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `
+        youtube: [...Array(10).keys()].map(i => `<tr><td>Video #${i+1}</td><td>${(10000 + i*1500).toLocaleString()}</td><td>${(500 + i*120).toLocaleString()}</td><td>${sentimentTag(['Good','Neutral','Bad'][i%3])}</td></tr>`).join(''),
+        twitter: [...Array(10).keys()].map(i => `<tr><td>Tweet #${i+1}</td><td>${80 + i*15}</td><td>${200 + i*50}</td><td>${sentimentTag(['Neutral','Good','Bad'][i%3])}</td></tr>`).join(''),
+        reddit: [...Array(10).keys()].map(i => `<tr><td>Reddit Thread #${i+1}</td><td>${50 + i*40}</td><td>${5 + i*4}</td><td>${sentimentTag(['Neutral','Bad','Good'][i%3])}</td></tr>`).join(''),
+        instagram: [...Array(10).keys()].map(i => `<tr><td>Post #${i+1}</td><td>${90 + i*30}</td><td>${1000 + i*200}</td><td>${sentimentTag(['Bad','Good','Neutral'][i%3])}</td></tr>`).join('')
       };
 
       const dummyStats = {
@@ -205,9 +194,13 @@
         instagram: { followers: '215,300', engagement: '5.5%', reach: '2.3M' }
       };
 
-      feedContainer.innerHTML = dummyFeeds[platform] || "<p>No feed available.</p>";
+      feedContainer.innerHTML = `
+        <table>
+          <thead><tr><th>Content</th><th>Reach</th><th>Likes</th><th>Sentiment</th></tr></thead>
+          <tbody>${dummyFeeds[platform] || ""}</tbody>
+        </table>
+      `;
 
-      // Update Stats
       const stats = dummyStats[platform];
       if (stats) {
         document.getElementById('followers').innerText = stats.followers;
@@ -215,6 +208,30 @@
         document.getElementById('reach').innerText = stats.reach;
       }
     }
+
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['AdSense', 'Affiliate', 'Brand Marketing'],
+        datasets: [{
+          label: 'Revenue in USD',
+          data: [2000, 1200, 1000],
+          borderColor: '#4caf50',
+          backgroundColor: 'rgba(76, 175, 80, 0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Revenue Trend' }
+        },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
   </script>
 </body>
 </html>
