@@ -11,6 +11,11 @@
     <div class="login-box">
       <h1>AI Influencer Manager</h1>
       <form onsubmit="return login(event)">
+        <select id="role" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="influencer">Influencer</option>
+          <option value="agency">Agency</option>
+        </select>
         <input type="text" id="email" placeholder="Email" required />
         <input type="password" id="password" placeholder="Password" required />
         <button type="submit">Login</button>
@@ -22,16 +27,17 @@
   <script>
     function login(event) {
       event.preventDefault();
+      const role = document.getElementById("role").value;
       const email = document.getElementById("email").value.trim().toLowerCase();
       const password = document.getElementById("password").value.trim().toLowerCase();
       const error = document.getElementById("error-msg");
 
-      if (email === "influencer" && password === "influencer") {
+      if (role === "influencer" && email === "influencer" && password === "influencer") {
         window.location.href = "influencer-dashboard.html";
-      } else if (email === "agency" && password === "agency") {
+      } else if (role === "agency" && email === "agency" && password === "agency") {
         window.location.href = "agency-dashboard.html";
       } else {
-        error.textContent = "Invalid credentials. Try again.";
+        error.textContent = "Invalid credentials or role. Try again.";
       }
     }
   </script>
