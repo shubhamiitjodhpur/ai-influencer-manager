@@ -3,43 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Influencer Manager | Login</title>
-  <link rel="stylesheet" href="login.css" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    select {
+      color: #333;
+      background-color: white;
+    }
+    option {
+      color: #000;
+    }
+  </style>
 </head>
 <body>
   <div class="login-container">
-    <div class="login-box">
-      <h1>AI Influencer Manager</h1>
-      <form onsubmit="return login(event)">
-        <input type="text" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <select id="role" required>
-          <option value="" disabled selected>Select Role</option>
-          <option value="influencer">Influencer</option>
-          <option value="agency">Agency</option>
-        </select>
-        <button type="submit">Login</button>
-        <p id="error-msg" style="color: #ff5e5e; margin-top: 10px;"></p>
-      </form>
-    </div>
+    <h1>Login</h1>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <label for="role">Login as</label>
+      <select id="role" name="role">
+        <option value="influencer">Influencer</option>
+        <option value="agency">Agency</option>
+      </select>
+
+      <button type="submit">Login</button>
+    </form>
   </div>
 
   <script>
-    function login(event) {
-      event.preventDefault();
-      const role = document.getElementById("role").value;
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const password = document.getElementById("password").value.trim().toLowerCase();
-      const error = document.getElementById("error-msg");
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-      if (role === "influencer" && email === "influencer" && password === "influencer") {
-        window.location.href = "influencer-dashboard.html";
-      } else if (role === "agency" && email === "agency" && password === "agency") {
-        window.location.href = "agency-dashboard.html";
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      if (email === "influencer" && password === "influencer") {
+        window.location.href = "influencer.html";
+      } else if (email === "agency" && password === "agency") {
+        window.location.href = "agency.html";
       } else {
-        error.textContent = "Invalid credentials or role. Try again.";
+        alert("Invalid credentials");
       }
-    }
+    });
   </script>
 </body>
 </html>
