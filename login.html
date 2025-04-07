@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Influencer Manager | Login</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h1>AI Influencer Manager</h1>
+      <form onsubmit="return loginRedirect(event)">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <select id="roleSelect" required>
+          <option value="">Login as...</option>
+          <option value="influencer">Influencer</option>
+          <option value="agency">Marketing Agency</option>
+        </select>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function loginRedirect(event) {
+      event.preventDefault();
+      const role = document.getElementById("roleSelect").value;
+      if (role === "influencer") {
+        window.location.href = "influencer-dashboard.html";
+      } else if (role === "agency") {
+        window.location.href = "agency-dashboard.html";
+      }
+    }
+  </script>
+</body>
+</html>

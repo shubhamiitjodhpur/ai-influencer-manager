@@ -8,13 +8,23 @@
   <style>
     .loading {
       display: none;
-      margin-top: 10px;
-      color: #555;
-      font-size: 14px;
+      margin-top: 15px;
+      color: #007bff;
+      font-size: 16px;
+      font-weight: bold;
     }
+
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+
+    input, select, button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -23,15 +33,15 @@
     <div class="login-box">
       <h1>AI Influencer Manager</h1>
       <form onsubmit="return login(event)">
-        <input type="text" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
+        <input type="text" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password " />
         <select id="role" required>
           <option value="" disabled selected>Select Role</option>
           <option value="influencer">Influencer</option>
           <option value="agency">Agency</option>
         </select>
         <button type="submit" id="loginBtn" disabled>Login</button>
-        <p class="loading" id="loading-msg">Redirecting...</p>
+        <p class="loading" id="loading-msg">🔄 Redirecting to your dashboard...</p>
         <p id="error-msg" style="color: #ff5e5e; margin-top: 10px;"></p>
       </form>
     </div>
@@ -43,12 +53,12 @@
     const loadingMsg = document.getElementById("loading-msg");
     const errorMsg = document.getElementById("error-msg");
 
-    // Enable login button when role is selected
+    // Enable login button when a role is selected
     roleSelect.addEventListener("change", () => {
       loginBtn.disabled = !roleSelect.value;
     });
 
-    // Remember last selected role
+    // Load saved role from localStorage
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("selectedRole");
       if (savedRole) {
@@ -66,14 +76,14 @@
         return;
       }
 
-      // Save selected role
+      // Save role
       localStorage.setItem("selectedRole", role);
 
-      // Show loading message
+      // Show loading
       loadingMsg.style.display = "block";
       errorMsg.textContent = "";
 
-      // Simulate loading delay then redirect
+      // Fake loading delay then redirect
       setTimeout(() => {
         window.location.href = `${role}-dashboard.html`;
       }, 1200);
