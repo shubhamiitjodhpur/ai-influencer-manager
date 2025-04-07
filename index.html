@@ -32,9 +32,9 @@
       const password = document.getElementById("password").value.trim().toLowerCase();
       const error = document.getElementById("error-msg");
 
-      if (role === "influencer" && email === "influencer" && password === "influencer") {
+      if (role === "influencer") {
         window.location.href = "influencer-dashboard.html";
-      } else if (role === "agency" && email === "agency" && password === "agency") {
+      } else if (role === "agency") {
         window.location.href = "agency-dashboard.html";
       } else {
         error.textContent = "Invalid credentials or role. Try again.";
